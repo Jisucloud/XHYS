@@ -141,7 +141,8 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvDns.setText(OkGoHelper.dnsHttpsList.get(Hawk.get(HawkConfig.DOH_URL, 0)));
         tvHomeDefaultShow = findViewById(R.id.tvHomeDefaultShow);
         tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, false) ? "开启" : "关闭");
-
+        TextView tvVersion = findViewById(R.id.versionText);
+        tvVersion.setText(BuildConfig.VERSION_NAME);
         //takagen99 : Set HomeApi as default
         findViewById(R.id.llHomeApi).requestFocus();
 
@@ -792,13 +793,10 @@ public class ModelSettingFragment extends BaseLazyFragment {
                 dialog.show();
             }
         });
-        // About App -----------------------------------------------
-        findViewById(R.id.llAbout).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                FastClickCheckUtil.check(v);
-                AboutDialog dialog = new AboutDialog(mActivity);
-                dialog.show();
+        findViewById(R.id.Version).setOnClickListener(v -> {
+            FastClickCheckUtil.check(v);
+            // 强制检查更新
+            Updater.create().force().start(mActivity);
             }
         });
 

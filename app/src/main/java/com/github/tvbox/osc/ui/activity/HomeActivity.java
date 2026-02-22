@@ -144,6 +144,7 @@ public class HomeActivity extends BaseActivity {
         App.startWebserver();
         initView();
         initViewModel();
+        checkUpdateOnStart();
         useCacheConfig = false;
         Intent intent = getIntent();
         if (intent != null && intent.getExtras() != null) {
@@ -933,13 +934,57 @@ public class HomeActivity extends BaseActivity {
         blinkAnimation.setRepeatCount(Animation.INFINITE);
         tvName.startAnimation(blinkAnimation);
     }
-//    public void onClick(View v) {
-//        FastClickCheckUtil.check(v);
-//        if (v.getId() == R.id.tvFind) {
-//            jumpActivity(SearchActivity.class);
-//        } else if (v.getId() == R.id.tvMenu) {
-//            jumpActivity(SettingActivity.class);
-//        }
-//    }
+    /**
+     * 启动时检查更新（每天只检查一次）
+     */
+    private void checkUpdateOnStart() {
+        String today = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+                .format(new Date());
+        String lastCheck = Hawk.get(HawkConfig.UPDATE_CHECK_DATE, "");
+        if (!today.equals(lastCheck)) {
+            Hawk.put(HawkConfig.UPDATE_CHECK_DATE, today);
+            // 延迟 5 秒后执行权限检查和更新
+            mHandler.postDelayed(this::checkPermissionsAndUpdate, 5000);
+        }
+    }
+
+    // 新增权限检查方法
+    private void checkPermissionsAndUpdate() {
+        if (XXPermissions.isGranted(this, Permission.Group.STORAGE)) {
+            // 已有权限，直接更新
+            performUpdate();
+        } else {
+            // 请求存储权限
+            XXPermissions.with(this)
+                    .permission(Permission.Group.STORAGE)
+                    .request(new OnPermissionCallback() {
+                        @Override
+                        public void onGranted(List<String> permissions, boolean all) {
+                            if (all) {
+                                performUpdate();
+                            }
+                        }
+
+                        @Override
+                        public void onDenied(List<String> permissions, boolean never) {
+                            if (never) {
+                                Toast.makeText(HomeActivity.this,
+                                        "获取存储权限失败，请在系统设置中开启",
+                                        Toast.LENGTH_SHORT).show();
+                                XXPermissions.startPermissionActivity(HomeActivity.this, permissions);
+                            } else {
+                                Toast.makeText(HomeActivity.this,
+                                        "获取存储权限失败",
+                                        Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+        }
+    }
+
+    // 实际执行更新的方法
+    private void performUpdate() {
+        Updater.create().silent().start(HomeActivity.this);
+    }
 
 }

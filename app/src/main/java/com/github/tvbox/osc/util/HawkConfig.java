@@ -77,4 +77,6 @@ public class HawkConfig {
         return Hawk.get(DEBUG_OPEN, false);
     }
     public static boolean hotVodDelete;
+    public static final String UPDATE_CHECK_DATE = "update_check_date";
+
 }
