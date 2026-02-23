@@ -42,7 +42,7 @@ public class Github {
         return "https://xhys.lcjly.cn/update/" + name + ".json";
     }
     public static String getApk(String name) {
-        String githubUrl = "https://github.com/xisohi/XHYSosc/releases/download/XHYS/" + name + ".apk";
+        String githubUrl = "https://github.com/xisohi/XHYSosc/releases/download/XHYS/" + name;
         return getAcceleratedUrl(githubUrl);
     }
 
