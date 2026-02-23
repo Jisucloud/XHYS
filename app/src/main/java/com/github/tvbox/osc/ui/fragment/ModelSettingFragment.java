@@ -143,7 +143,7 @@ public class ModelSettingFragment extends BaseLazyFragment {
         tvHomeDefaultShow = findViewById(R.id.tvHomeDefaultShow);
         tvHomeDefaultShow.setText(Hawk.get(HawkConfig.HOME_DEFAULT_SHOW, false) ? "开启" : "关闭");
         TextView tvVersion = findViewById(R.id.versionText);
-        tvVersion.setText(BuildConfig.VERSION_NAME);
+        tvVersion.setText(BuildConfig.VERSION_CODE);
         //takagen99 : Set HomeApi as default
         findViewById(R.id.llHomeApi).requestFocus();
 
